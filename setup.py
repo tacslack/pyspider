@@ -24,40 +24,62 @@ install_requires = [
     'cssselect>=0.9',
     'lxml',
     'pycurl',
-    'pyquery',
     'requests>=2.2',
-    'tornado>=3.2',
     'Flask-Login>=0.2.11',
     'u-msgpack-python>=1.6',
     'click>=3.3',
     'six>=1.5.0',
+    'tblib>=1.3.0'
 ]
-if sys.version_info < (3, 0):
+
+if sys.version_info < (2, 7):  # 2.6
+    install_requires.extend([
+        'wsgidav<2.0.0',
+        'tornado>=3.2,<4.5',
+        'pyquery<1.3.0',
+    ])
+elif sys.version_info >= (3, 0):  # 3.*
+    install_requires.extend([
+        'wsgidav>=2.0.0',
+        'tornado>=3.2,<=4.5.3',
+        'pyquery',
+    ])
+else:  # 2.7
     install_requires.extend([
         'wsgidav',
+        'tornado>=3.2,<=4.5.3',
+        'pyquery',
     ])
 
 extras_require_all = [
     'mysql-connector-python>=1.2.2',
     'pymongo>=2.7.2',
-    'SQLAlchemy>=0.9.7',
     'redis',
-    'kombu',
+    'redis-py-cluster',
     'psycopg2',
     'elasticsearch>=2.0.0,<2.4.0',
 ]
-if sys.version_info < (2, 7) or sys.version_info >= (3, 0):
+if sys.version_info < (2, 7):  # 2.6
     extras_require_all.extend([
+        'kombu<4.0',
         'amqp>=1.3.0,<2.0',
-    ])
-else:
-    extras_require_all.extend([
-        'amqp>=1.3.0',
-    ])
-if sys.version_info < (3, 0):
-    extras_require_all.extend([
         'pika>=0.9.14',
         'beanstalkc',
+        'SQLAlchemy>=0.9.7,<=1.1.13',
+    ])
+elif sys.version_info >= (3, 0):  # 3.*
+    extras_require_all.extend([
+        'kombu',
+        'amqp>=2.1.1',
+        'SQLAlchemy>=0.9.7',
+    ])
+else:  # 2.7
+    extras_require_all.extend([
+        'kombu',
+        'pika>=0.9.14',
+        'beanstalkc',
+        'amqp>=1.3.0',
+        'SQLAlchemy>=0.9.7',
     ])
 
 
@@ -83,6 +105,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
 
         'License :: OSI Approved :: Apache Software License',
 
@@ -106,7 +129,7 @@ setup(
         'test': [
             'unittest2>=0.5.1',
             'coverage',
-            'httpbin',
+            'httpbin<=0.5.0',
             'pyproxy>=0.1.6',
             'easywebdav',
         ]
@@ -116,7 +139,9 @@ setup(
         'pyspider': [
             'logging.conf',
             'fetcher/phantomjs_fetcher.js',
-            'webui/static/*',
+            'fetcher/splash_fetcher.lua',
+            'webui/static/*.js',
+            'webui/static/*.css',
             'webui/templates/*'
         ],
     },
